@@ -11,5 +11,6 @@ namespace PMS.PatientAPI.Models
         public string DiagnosisName { get; set; }
         public int DiagnosisTypeId { get; set; }
         public bool DiagnosisIsDepricated { get; set; }
+        public DateTime? AppointmentVisitDate { get; set; }
     }
 }

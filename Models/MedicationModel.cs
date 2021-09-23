@@ -12,5 +12,6 @@ namespace PMS.PatientAPI.Models
         public string DrugStrength { get; set; }
         public string DrugBrandName { get; set; }
         public string ReferenceStandard { get; set; }
-    }
+        public DateTime? AppointmentVisitDate { get; set; }
+    } 
 }

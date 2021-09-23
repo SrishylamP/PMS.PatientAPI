@@ -367,6 +367,61 @@ namespace PMS.PatientAPI.Controllers
 
             }
         }
+        [Authorize]
+        [HttpGet()]
+        [Route("GetDiagnosisByPatientId")]
+        public async Task<IActionResult> GetDiagnosisByPatientId(int PatientId)
+        {
+            try
+            {
+                var result = await _patientService.GetDiagnosisByPatientId(PatientId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+        [Authorize]
+        [HttpGet()]
+        [Route("GetProcedureByPatientId")]
+        public async Task<IActionResult> GetProcedureByPatientId(int PatientId)
+        {
+            try
+            {
+                var result = await _patientService.GetProcedureByPatientId(PatientId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+        [Authorize]
+        [HttpGet()]
+        [Route("GetMedicationsByPatientId")]
+        public async Task<IActionResult> GetMedicationsByPatientId(int PatientId)
+        {
+            try
+            {
+                var result = await _patientService.GetMedicationsByPatientId(PatientId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+
 
     }
 }

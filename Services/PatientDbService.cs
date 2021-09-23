@@ -619,5 +619,82 @@ namespace PMS.PatientAPI.Services
             _context.Audits.Add(aObj);
             _context.SaveChanges();
         }
+        public async Task<List<DiagnosesModel>> GetDiagnosisByPatientId(int PatientId)
+        {
+            try
+            {
+                var DiagnosisList = await (from pd in _context.PatientDiagnosisDetails
+                                           join d in _context.Diagnoses
+                                            on pd.DiagnosisId equals d.DiagnosisId
+                                           where pd.PatientId == PatientId 
+                                           select new DiagnosesModel
+                                           {
+                                               DiagnosisId = pd.DiagnosisId,
+                                               DiagnosisName = d.DiagnosisName,
+                                               DiagnosisCode = d.DiagnosisCode,
+                                               DiagnosisIsDepricated = d.DiagnosisIsDepricated,
+                                               DiagnosisTypeId = d.DiagnosisTypeId,
+                                               AppointmentVisitDate = pd.AddedDate
+                                           }).ToListAsync();
+                return DiagnosisList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+        public async Task<List<ProcedureModel>> GetProcedureByPatientId(int PatientId)
+        {
+            try
+            {
+                var procedureList = await (from pd in _context.PatientProcedureDetails
+                                           join d in _context.Procedures
+                                            on pd.PatientProcedureId equals d.ProcedureId
+                                           where pd.PatientId == PatientId
+                                           select new ProcedureModel
+                                           {
+                                               ProcedureId = pd.PatientProcedureId,
+                                               ProcedureName = d.ProcedureName,
+                                               ProcedureCode = d.ProcedureCode,
+                                               ProcedureIsDepricated = d.ProcedureIsDepricated,
+                                               ProcedureApproach = d.ProcedureApproach,
+                                               AppointmentVisitDate = pd.AddedDate
+                                           }).ToListAsync();
+                return procedureList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+        public async Task<List<MedicationModel>> GetMedicationsByPatientId(int PatientId)
+        {
+            try
+            {
+                var medicationList = await (from pd in _context.PatientMedicationsDetails
+                                           join d in _context.Medications
+                                            on pd.PatientMedicationId equals d.DrugId
+                                           where pd.PatientId == PatientId
+                                           select new MedicationModel
+                                           {
+                                               DrugId = pd.DrugId,
+                                               DrugName = d.DrugName,
+                                               DrugForm = string.IsNullOrEmpty(d.DrugStrength) ? d.DrugName : d.DrugName+"-"+d.DrugStrength,
+                                               DrugBrandName = d.DrugBrandName,
+                                               DrugStrength = d.DrugStrength,
+                                               ReferenceStandard=d.ReferenceStandard,
+                                               AppointmentVisitDate = pd.AddedDate
+                                           }).ToListAsync();
+                return medicationList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
     }
 }

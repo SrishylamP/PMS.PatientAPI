@@ -11,5 +11,6 @@ namespace PMS.PatientAPI.Models
         public string ProcedureName { get; set; }
         public string ProcedureApproach { get; set; }
         public bool ProcedureIsDepricated { get; set; }
+        public DateTime? AppointmentVisitDate { get; set; }
     }
 }
