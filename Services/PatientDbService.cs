@@ -695,6 +695,29 @@ namespace PMS.PatientAPI.Services
             }
 
         }
+        public async Task<List<VitalSignsModel>> GetVitalSignsByPatientId(int PatientId)
+        {
+            try
+            {
+                var medicationList = await (from pd in _context.PatientVitalDetails
+                                            where pd.PatientId == PatientId
+                                            select new VitalSignsModel
+                                            {
+                                                BloodPressure = pd.BloodPressure,
+                                                BodyTemprature = pd.BodyTemprature,
+                                                Height = pd.Height,
+                                                Weight = pd.Weight,
+                                                RespirationRate = pd.RespirationRate,
+                                            }).ToListAsync();
+                return medicationList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+        
 
     }
 }

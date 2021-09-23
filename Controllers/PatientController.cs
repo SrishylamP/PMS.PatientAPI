@@ -421,7 +421,25 @@ namespace PMS.PatientAPI.Controllers
             }
 
         }
+        [Authorize]
+        [HttpGet()]
+        [Route("GetVitalSignsByPatientId")]
+        public async Task<IActionResult> GetVitalSignsByPatientId(int PatientId)
+        {
+            try
+            {
+                var result = await _patientService.GetVitalSignsByPatientId(PatientId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
 
+            }
+
+        }
+        
 
     }
 }
