@@ -545,6 +545,24 @@ namespace PMS.PatientAPI.Controllers
             }
 
         }
+        [Authorize]
+        [HttpPost]
+        [Route("UpdatePatientEmergencyDetails")]
+        public async Task<IActionResult> UpdatePatientEmergencyDetails([FromBody] List<PatientEmergencyDetailModel> model)
+        {
+            try
+            {
+                var result = await _patientService.UpdatePatientEmergencyDetails(model);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
 
         [HttpPost]
         [Authorize]
@@ -564,6 +582,7 @@ namespace PMS.PatientAPI.Controllers
             }
 
         }
+        
         [Authorize]
         [HttpGet]
         [Route("GetPatientDetailsForVisit")]
