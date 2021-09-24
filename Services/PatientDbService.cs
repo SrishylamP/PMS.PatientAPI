@@ -717,7 +717,62 @@ namespace PMS.PatientAPI.Services
             }
 
         }
-        
+        public async Task<ResponseMessage> UpdatePatientEmergencyDetails(List<PatientEmergencyDetailModel> model)
+        {
+            try
+            {
+                //EmergencyContactDetail contactDetails = new EmergencyContactDetail();
+                var resObj = new ResponseMessage();
+                foreach (var item in model)
+                {
+                   // var patientDeatils = _context.PatientDetails.FirstOrDefault((e) => e.PatientId == item.PatientId);
+                    var emergencyDetails = _context.EmergencyContactDetails.FirstOrDefault(e => e.PatientId == item.PatientId && e.EmergencyContactId == item.EmergencyContactId);
+                    if (emergencyDetails != null)
+                    {
+
+                        //contactDetails.PatientId = item.PatientId;
+                        emergencyDetails.Access = item.Access;
+                        emergencyDetails.Address = item.Address;
+                        emergencyDetails.EfisrtName = item.EFirstName;
+                        emergencyDetails.ElastName = item.ELastName;
+                        emergencyDetails.Email = item.Email;
+                        emergencyDetails.Phone = item.Phone;
+                        emergencyDetails.RelationShip = item.RelationShip;
+                        emergencyDetails.CreatedDate = DateTime.Now;
+                       // _context.Entry(contactDetails).State = EntityState.Modified;
+                        _context.EmergencyContactDetails.Update(emergencyDetails);
+                        await _context.SaveChangesAsync();
+                        var audit = new AuditModel
+                        {
+                            Operation = Constants.Update,
+                            ObjectName = "Patient Contact Details",
+                            Description = $"Patient Contact Details Updated with Id: {emergencyDetails.EmergencyContactId}",
+                            CreatedBy = item.PatientId,
+                            CreatedDate = DateTime.Now
+                        };
+                        AuditMe(audit);
+                        resObj.IsSuccess = true;
+                        resObj.message = "Successful Updated";
+                    }
+
+                    else
+                    {
+                        resObj.IsSuccess = false;
+                        resObj.message = "Patient detail is invalid";
+                    }
+                }
+
+
+                return resObj;
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
 
     }
 }

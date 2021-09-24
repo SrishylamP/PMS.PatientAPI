@@ -33,9 +33,10 @@ namespace PMS.PatientAPI.Services
         Task<List<ProcedureModel>> GetProcedureByPatientId(int PatientId);
         Task<List<MedicationModel>> GetMedicationsByPatientId(int PatientId);
         Task<List<VitalSignsModel>> GetVitalSignsByPatientId(int PatientId);
-        //Task<ResponseMessage> SavePatientDiagnosisDetails(DiagnosesModel model, int PatientId, int AppointmentId, int userId);
-        //Task<ResponseMessage> DeletePatientDiagnosisDetails(int patientId, int AppointmentId, int diagnosisId);
+
+        Task<ResponseMessage> UpdatePatientEmergencyDetails(List<PatientEmergencyDetailModel> model);
         
+
     }
 
    
