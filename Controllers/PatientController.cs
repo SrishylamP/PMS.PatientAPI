@@ -225,14 +225,13 @@ namespace PMS.PatientAPI.Controllers
 
         }
 
-        [Authorize]
         [HttpGet()]
         [Route("GetPatientDiagnosisDetails")]
-        public async Task<IActionResult> GetPatientDiagnosisDetails(int PatientId,int AppointmentId)
+        public async Task<IActionResult> GetPatientDiagnosisDetails(int PatientId, int AppointmentId)
         {
             try
             {
-                var result = await _patientService.GetPatientDiagnosisDetails(PatientId,AppointmentId);
+                var result = await _patientService.GetPatientDiagnosisDetails(PatientId, AppointmentId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -241,12 +240,11 @@ namespace PMS.PatientAPI.Controllers
                 return BadRequest(ex);
 
             }
-
         }
         [HttpPost]
         [Authorize]
         [Route("SavePatientDiagnosisDetails")]
-        public async Task<IActionResult> SavePatientDiagnosisDetails([FromBody] DiagnosesModel model, int PatientId, int AppointmentId,int userId)
+        public async Task<IActionResult> SavePatientDiagnosisDetails([FromBody] DiagnosesModel model, int PatientId, int AppointmentId, int userId)
         {
             try
             {
@@ -257,7 +255,6 @@ namespace PMS.PatientAPI.Controllers
             {
                 logger.Log(LogLevel.Error, ex, ex.Message);
                 return BadRequest(ex);
-
             }
 
         }
@@ -439,7 +436,188 @@ namespace PMS.PatientAPI.Controllers
             }
 
         }
-        
 
+        [Authorize]
+        [HttpGet()]
+        [Route("GetPatientProcedureDetails")]
+        public async Task<IActionResult> GetPatientProcedureDetails(int PatientId, int AppointmentId)
+        {
+            try
+            {
+                var result = await _patientService.GetPatientProcedureDetails(PatientId, AppointmentId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+        [HttpPost]
+        [Authorize]
+        [Route("SavePatientProcedureDetails")]
+        public async Task<IActionResult> SavePatientProcedureDetails([FromBody] ProcedureModel model, int PatientId, int AppointmentId, int userId)
+        {
+            try
+            {
+                var result = await _patientService.SavePatientProcedureDetails(model, PatientId, AppointmentId, userId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+        [Authorize]
+        [HttpDelete]
+        [Route("DeletePatientProcedureDetails")]
+        public async Task<IActionResult> DeletePatientProcedureDetails(int patientId, int appointmentId, int ProcedureId)
+        {
+            try
+            {
+                var result = await _patientService.DeletePatientProcedureDetails(patientId, appointmentId, ProcedureId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+        [Authorize]
+        [HttpGet()]
+        [Route("GetPatientMedicationDetails")]
+        public async Task<IActionResult> GetPatientMedicationDetails(int PatientId, int AppointmentId)
+        {
+            try
+            {
+                var result = await _patientService.GetPatientMedicationDetails(PatientId, AppointmentId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+        [HttpPost]
+        [Authorize]
+        [Route("SavePatientMedicationDetails")]
+        public async Task<IActionResult> SavePatientMedicationDetails([FromBody] MedicationModel model, int PatientId, int AppointmentId, int userId)
+        {
+            try
+            {
+                var result = await _patientService.SavePatientMedicationDetails(model, PatientId, AppointmentId, userId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+        [Authorize]
+        [HttpDelete]
+        [Route("DeletePatientMedicationDetails")]
+        public async Task<IActionResult> DeletePatientMedicationDetails(int patientId, int appointmentId, int DrugId)
+        {
+            try
+            {
+                var result = await _patientService.DeletePatientMedicationDetails(patientId, appointmentId, DrugId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("ClosePatientVisit")]
+        public async Task<IActionResult> ClosePatientVisit(int PatientId, int AppointmentId)
+        {
+            try
+            {
+                var result = await _patientService.ClosePatientVisit(PatientId, AppointmentId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+        [Authorize]
+        [HttpGet]
+        [Route("GetPatientDetailsForVisit")]
+        public async Task<IActionResult> GetPatientDetailsForVisit(int patientId)
+        {
+            try
+            {
+                var result = await _patientService.GetPatientDetailsForVisit(patientId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+        [HttpPost]
+        [Authorize]
+        [Route("SavePatientVitalDetails")]
+        public async Task<IActionResult> SavePatientVitalDetails([FromBody] VitalModel model)
+        {
+            try
+            {
+                var result = await _patientService.SavePatientVitalDetails(model);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("GetPatientVitalDetails")]
+        public async Task<IActionResult> GetPatientVitalDetails(int patientId)
+        {
+            try
+            {
+                var result = await _patientService.GetPatientVitalDetails(patientId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
     }
 }

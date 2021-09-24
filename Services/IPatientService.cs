@@ -35,7 +35,16 @@ namespace PMS.PatientAPI.Services
         Task<List<VitalSignsModel>> GetVitalSignsByPatientId(int PatientId);
         //Task<ResponseMessage> SavePatientDiagnosisDetails(DiagnosesModel model, int PatientId, int AppointmentId, int userId);
         //Task<ResponseMessage> DeletePatientDiagnosisDetails(int patientId, int AppointmentId, int diagnosisId);
-        
+        Task<List<ProcedureModel>> GetPatientProcedureDetails(int PatientId, int AppointmentId);
+        Task<ResponseMessage> SavePatientProcedureDetails(ProcedureModel model, int PatientId, int AppointmentId, int userId);
+        Task<ResponseMessage> DeletePatientProcedureDetails(int patientId, int AppointmentId, int ProcedureId);
+        Task<List<MedicationModel>> GetPatientMedicationDetails(int PatientId, int AppointmentId);
+        Task<ResponseMessage> SavePatientMedicationDetails(MedicationModel model, int PatientId, int AppointmentId, int userId);
+        Task<ResponseMessage> DeletePatientMedicationDetails(int patientId, int AppointmentId, int DrugId);
+        Task<ResponseMessage> ClosePatientVisit(int PatientId, int AppointmentId);
+        Task<List<UserModel>> GetPatientDetailsForVisit(int patientId);
+        Task<ResponseMessage> SavePatientVitalDetails(VitalModel model);
+        Task<List<VitalModel>> GetPatientVitalDetails(int patientId);
     }
 
    

@@ -510,7 +510,7 @@ namespace PMS.PatientAPI.Services
                 else
                 {
                     resObj.IsSuccess = false;
-                    resObj.message = "Diagnosis Details Already Exist, Please enter new Allergy Details";
+                    resObj.message = "Diagnosis Details Already Exist, Please enter new Diagnosis Details";
                 }
                 return resObj;
             }
@@ -626,7 +626,7 @@ namespace PMS.PatientAPI.Services
                 var DiagnosisList = await (from pd in _context.PatientDiagnosisDetails
                                            join d in _context.Diagnoses
                                             on pd.DiagnosisId equals d.DiagnosisId
-                                           where pd.PatientId == PatientId 
+                                           where pd.PatientId == PatientId
                                            select new DiagnosesModel
                                            {
                                                DiagnosisId = pd.DiagnosisId,
@@ -674,19 +674,19 @@ namespace PMS.PatientAPI.Services
             try
             {
                 var medicationList = await (from pd in _context.PatientMedicationsDetails
-                                           join d in _context.Medications
-                                            on pd.PatientMedicationId equals d.DrugId
-                                           where pd.PatientId == PatientId
-                                           select new MedicationModel
-                                           {
-                                               DrugId = pd.DrugId,
-                                               DrugName = d.DrugName,
-                                               DrugForm = string.IsNullOrEmpty(d.DrugStrength) ? d.DrugName : d.DrugName+"-"+d.DrugStrength,
-                                               DrugBrandName = d.DrugBrandName,
-                                               DrugStrength = d.DrugStrength,
-                                               ReferenceStandard=d.ReferenceStandard,
-                                               AppointmentVisitDate = pd.AddedDate
-                                           }).ToListAsync();
+                                            join d in _context.Medications
+                                             on pd.PatientMedicationId equals d.DrugId
+                                            where pd.PatientId == PatientId
+                                            select new MedicationModel
+                                            {
+                                                DrugId = pd.DrugId,
+                                                DrugName = d.DrugName,
+                                                DrugForm = string.IsNullOrEmpty(d.DrugStrength) ? d.DrugName : d.DrugName + "-" + d.DrugStrength,
+                                                DrugBrandName = d.DrugBrandName,
+                                                DrugStrength = d.DrugStrength,
+                                                ReferenceStandard = d.ReferenceStandard,
+                                                AppointmentVisitDate = pd.AddedDate
+                                            }).ToListAsync();
                 return medicationList;
             }
             catch (Exception ex)
@@ -717,7 +717,320 @@ namespace PMS.PatientAPI.Services
             }
 
         }
-        
 
+        public async Task<List<ProcedureModel>> GetPatientProcedureDetails(int PatientId, int AppointmentId)
+        {
+            try
+            {
+                var ProcedureList = await (from pd in _context.PatientProcedureDetails
+                                           join d in _context.Procedures
+                                            on pd.ProcedureId equals d.ProcedureId
+                                           where pd.PatientId == PatientId && pd.AppointmentId == AppointmentId
+                                           select new ProcedureModel
+                                           {
+                                               ProcedureId = pd.ProcedureId,
+                                               ProcedureName = d.ProcedureName,
+                                               ProcedureCode = d.ProcedureCode,
+                                               ProcedureIsDepricated = d.ProcedureIsDepricated,
+                                               ProcedureApproach = d.ProcedureApproach
+                                           }).ToListAsync();
+                return ProcedureList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<ResponseMessage> SavePatientProcedureDetails(ProcedureModel model, int PatientId, int AppointmentId, int userId)
+        {
+            try
+            {
+                var procedureDetail = _context.PatientProcedureDetails.FirstOrDefault((e) => e.PatientId == PatientId && e.AppointmentId == AppointmentId && e.ProcedureId == model.ProcedureId);
+                var resObj = new ResponseMessage();
+                if (procedureDetail == null)
+                {
+                    PatientProcedureDetail pad = new PatientProcedureDetail();
+                    pad.PatientId = PatientId;
+                    pad.AppointmentId = AppointmentId;
+                    pad.ProcedureId = model.ProcedureId;
+                    pad.AddedBy = userId;
+                    pad.AddedDate = DateTime.Now;
+                    await _context.PatientProcedureDetails.AddAsync(pad);
+                    await _context.SaveChangesAsync();
+                    var audit = new AuditModel
+                    {
+                        Operation = Constants.Create,
+                        ObjectName = "Patient Procedure Details",
+                        Description = $"Patient Procedure Details Created with PatientId: {pad.PatientId + "Procedure" + pad.ProcedureId}",
+                        CreatedBy = userId,
+                        CreatedDate = DateTime.Now
+                    };
+                    AuditMe(audit);
+                    resObj.IsSuccess = true;
+                    resObj.message = "Successful";
+
+                }
+                else
+                {
+                    resObj.IsSuccess = false;
+                    resObj.message = "Procedure Details Already Exist, Please enter new Procedure Details";
+                }
+                return resObj;
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+        public async Task<ResponseMessage> DeletePatientProcedureDetails(int patientId, int AppointmentId, int ProcedureId)
+        {
+            ResponseMessage response = new ResponseMessage();
+            PatientProcedureDetail patientProcedureDetail;
+            try
+            {
+
+                patientProcedureDetail = await _context.PatientProcedureDetails.FirstOrDefaultAsync(x => x.PatientId == patientId && x.AppointmentId == AppointmentId && x.ProcedureId == ProcedureId);
+                if (patientProcedureDetail != null)
+                {
+                    _context.PatientProcedureDetails.Remove(patientProcedureDetail);
+                    await _context.SaveChangesAsync();
+                    response.IsSuccess = true;
+                    response.message = "Deleted Successfully";
+                }
+                else
+                {
+                    response.IsSuccess = false;
+                    response.message = "Invalid  Details";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return response;
+        }
+        public async Task<List<MedicationModel>> GetPatientMedicationDetails(int PatientId, int AppointmentId)
+        {
+            try
+            {
+                var MedicationList = await (from pd in _context.PatientMedicationsDetails
+                                            join d in _context.Medications
+                                             on pd.DrugId equals d.DrugId
+                                            where pd.PatientId == PatientId && pd.AppointmentId == AppointmentId
+                                            select new MedicationModel
+                                            {
+                                                DrugId = pd.DrugId,
+                                                DrugName = d.DrugName + "-" + d.DrugStrength,
+                                                DrugBrandName = d.DrugBrandName,
+                                                DrugForm = d.DrugForm,
+                                            }).ToListAsync();
+                return MedicationList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<ResponseMessage> SavePatientMedicationDetails(MedicationModel model, int PatientId, int AppointmentId, int userId)
+        {
+            try
+            {
+                var medicationDetail = _context.PatientMedicationsDetails.FirstOrDefault((e) => e.PatientId == PatientId && e.AppointmentId == AppointmentId && e.DrugId == model.DrugId);
+                var resObj = new ResponseMessage();
+                if (medicationDetail == null)
+                {
+                    PatientMedicationsDetail pmd = new PatientMedicationsDetail();
+                    pmd.PatientId = PatientId;
+                    pmd.AppointmentId = AppointmentId;
+                    pmd.DrugId = model.DrugId;
+                    pmd.AddedBy = userId;
+                    pmd.AddedDate = DateTime.Now;
+                    await _context.PatientMedicationsDetails.AddAsync(pmd);
+                    await _context.SaveChangesAsync();
+                    var audit = new AuditModel
+                    {
+                        Operation = Constants.Create,
+                        ObjectName = "Patient Medication Details",
+                        Description = $"Patient Medication Details Created with PatientId: {pmd.PatientId + "Medication" + pmd.DrugId}",
+                        CreatedBy = userId,
+                        CreatedDate = DateTime.Now
+                    };
+                    AuditMe(audit);
+                    resObj.IsSuccess = true;
+                    resObj.message = "Successful";
+                }
+                else
+                {
+                    resObj.IsSuccess = false;
+                    resObj.message = "Medication Details Already Exist, Please enter new Medicatoin Details";
+                }
+                return resObj;
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+        public async Task<ResponseMessage> DeletePatientMedicationDetails(int patientId, int AppointmentId, int DrugId)
+        {
+            ResponseMessage response = new ResponseMessage();
+            PatientMedicationsDetail patientMedicationsDetail;
+            try
+            {
+
+                patientMedicationsDetail = await _context.PatientMedicationsDetails.FirstOrDefaultAsync(x => x.PatientId == patientId && x.AppointmentId == AppointmentId && x.DrugId == DrugId);
+                if (patientMedicationsDetail != null)
+                {
+                    _context.PatientMedicationsDetails.Remove(patientMedicationsDetail);
+                    await _context.SaveChangesAsync();
+                    response.IsSuccess = true;
+                    response.message = "Deleted Successfully";
+                }
+                else
+                {
+                    response.IsSuccess = false;
+                    response.message = "Invalid  Details";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return response;
+        }
+        public async Task<ResponseMessage> ClosePatientVisit(int PatientId, int AppointmentId)
+        {
+            try
+            {
+                var appointment = _context.Appointments.FirstOrDefault((a) => a.PatientId == PatientId && a.AppointmentId == AppointmentId);
+                var resObj = new ResponseMessage();
+                if (appointment != null)
+                {
+                    appointment.AppointmentStatus = "Closed";
+                    await _context.SaveChangesAsync();
+                    var audit = new AuditModel
+                    {
+                        Operation = Constants.Create,
+                        ObjectName = "Patient Visit Closed",
+                        Description = $"Patient Visit Closed with PatientId: {PatientId + "Appointment" + AppointmentId}",
+                        CreatedDate = DateTime.Now
+                    };
+                    AuditMe(audit);
+                    resObj.IsSuccess = true;
+                    resObj.message = "Successful";
+
+                }
+                else
+                {
+                    resObj.IsSuccess = false;
+                    resObj.message = "Appointment Not Exist";
+                }
+                return resObj;
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task<List<UserModel>> GetPatientDetailsForVisit(int patientId)
+        {
+
+            var objectList = await (from u in _context.Users
+                                    where u.UserId == patientId
+                                    select u).Select
+           (o => new UserModel
+           {
+               Title = o.Title,
+               FirstName = o.FirstName,
+               LastName = o.LastName,
+               DOB = o.Dob,
+               Gender = o.Gender,
+               Email = o.Email,
+               UserId = o.UserId,
+               Phone = o.Phone,
+               Patient = o.PatientDetails.Select(pd => new PatientModel
+               {
+                   Age = pd.Age,
+                   Race = pd.Race,
+                   Ethnicity = pd.Ethnicity,
+                   HomeAddress = pd.HomeAddress,
+                   LanguagesKnown = pd.LanguagesKnow,
+                   PatientId = pd.PatientId,
+                   UserId = pd.UserId,
+               }).ToList()
+           }).ToListAsync();
+
+            return objectList;
+
+            // return list;
+        }
+        public async Task<ResponseMessage> SavePatientVitalDetails(VitalModel model)
+        {
+            try
+            {
+                var resObj = new ResponseMessage();
+                var entity = await _context.PatientVitalDetails.FirstOrDefaultAsync(item => item.AppointmentId == model.AppointmentId && item.PatientId == model.PatientId);
+
+                if (entity == null)
+                {
+                    PatientVitalDetail vital = new PatientVitalDetail();
+                    vital.PatientId = model.PatientId;
+                    vital.AppointmentId = model.AppointmentId;
+                    vital.Height = model.Height;
+                    vital.Weight = model.Weight;
+                    vital.BloodPressure = model.BloodPressure;
+                    vital.BodyTemprature = model.BodyTemprature;
+                    vital.RespirationRate = model.RespirationRate;
+                    _context.PatientVitalDetails.Add(vital);
+                    _context.SaveChanges();
+
+                    resObj.IsSuccess = true;
+                    resObj.message = "Patient vital details save successfully";
+                }
+
+                else
+                {
+                    resObj.message = "Patient vital detail is invalid";
+                }
+
+                return resObj;
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public async Task<List<VitalModel>> GetPatientVitalDetails(int patientId)
+        {
+
+            var objectList = await (from u in _context.PatientVitalDetails
+                                    where u.PatientId == patientId
+                                    select u).Select
+           (o => new VitalModel
+           {
+               VitalId = o.VitalId,
+               Height = o.Height,
+               Weight = o.Weight,
+               BloodPressure = o.BloodPressure,
+               BodyTemprature = o.BodyTemprature,
+               RespirationRate = o.RespirationRate,
+           }).ToListAsync();
+
+            return objectList;
+
+            // return list;
+        }
     }
 }
