@@ -546,7 +546,7 @@ namespace PMS.PatientAPI.Controllers
 
         }
         [Authorize]
-        [HttpPost]
+        [HttpPut]
         [Route("UpdatePatientEmergencyDetails")]
         public async Task<IActionResult> UpdatePatientEmergencyDetails([FromBody] List<PatientEmergencyDetailModel> model)
         {
