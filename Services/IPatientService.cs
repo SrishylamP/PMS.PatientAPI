@@ -29,10 +29,10 @@ namespace PMS.PatientAPI.Services
         Task<List<MedicationModel>> GetAllMedications();
         Task<List<ProcedureModel>> GetAllProcedures();
 
-        Task<List<DiagnosesModel>> GetDiagnosisByPatientId(int PatientId);
-        Task<List<ProcedureModel>> GetProcedureByPatientId(int PatientId);
-        Task<List<MedicationModel>> GetMedicationsByPatientId(int PatientId);
-        Task<List<VitalSignsModel>> GetVitalSignsByPatientId(int PatientId);
+        Task<List<DiagnosesModel>> GetDiagnosisByPatientId(int PatientId, int appointmentId);
+        Task<List<ProcedureModel>> GetProcedureByPatientId(int PatientId, int appointmentId);
+        Task<List<MedicationModel>> GetMedicationsByPatientId(int PatientId, int appointmentId);
+        Task<List<VitalSignsModel>> GetVitalSignsByPatientId(int PatientId, int appointmentId);
 
         Task<ResponseMessage> UpdatePatientEmergencyDetails(List<PatientEmergencyDetailModel> model);
         

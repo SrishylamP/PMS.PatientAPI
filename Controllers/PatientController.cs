@@ -367,11 +367,11 @@ namespace PMS.PatientAPI.Controllers
         [Authorize]
         [HttpGet()]
         [Route("GetDiagnosisByPatientId")]
-        public async Task<IActionResult> GetDiagnosisByPatientId(int PatientId)
+        public async Task<IActionResult> GetDiagnosisByPatientId(int PatientId, int appointmentId)
         {
             try
             {
-                var result = await _patientService.GetDiagnosisByPatientId(PatientId);
+                var result = await _patientService.GetDiagnosisByPatientId(PatientId, appointmentId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -385,11 +385,11 @@ namespace PMS.PatientAPI.Controllers
         [Authorize]
         [HttpGet()]
         [Route("GetProcedureByPatientId")]
-        public async Task<IActionResult> GetProcedureByPatientId(int PatientId)
+        public async Task<IActionResult> GetProcedureByPatientId(int PatientId, int appointmentId)
         {
             try
             {
-                var result = await _patientService.GetProcedureByPatientId(PatientId);
+                var result = await _patientService.GetProcedureByPatientId(PatientId, appointmentId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -403,11 +403,11 @@ namespace PMS.PatientAPI.Controllers
         [Authorize]
         [HttpGet()]
         [Route("GetMedicationsByPatientId")]
-        public async Task<IActionResult> GetMedicationsByPatientId(int PatientId)
+        public async Task<IActionResult> GetMedicationsByPatientId(int PatientId, int appointmentId)
         {
             try
             {
-                var result = await _patientService.GetMedicationsByPatientId(PatientId);
+                var result = await _patientService.GetMedicationsByPatientId(PatientId, appointmentId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -421,11 +421,11 @@ namespace PMS.PatientAPI.Controllers
         [Authorize]
         [HttpGet()]
         [Route("GetVitalSignsByPatientId")]
-        public async Task<IActionResult> GetVitalSignsByPatientId(int PatientId)
+        public async Task<IActionResult> GetVitalSignsByPatientId(int PatientId, int appointmentId)
         {
             try
             {
-                var result = await _patientService.GetVitalSignsByPatientId(PatientId);
+                var result = await _patientService.GetVitalSignsByPatientId(PatientId, appointmentId);
                 return Ok(result);
             }
             catch (Exception ex)

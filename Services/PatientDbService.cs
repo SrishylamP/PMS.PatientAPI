@@ -619,14 +619,14 @@ namespace PMS.PatientAPI.Services
             _context.Audits.Add(aObj);
             _context.SaveChanges();
         }
-        public async Task<List<DiagnosesModel>> GetDiagnosisByPatientId(int PatientId)
+        public async Task<List<DiagnosesModel>> GetDiagnosisByPatientId(int PatientId, int AppointmentId)
         {
             try
             {
                 var DiagnosisList = await (from pd in _context.PatientDiagnosisDetails
                                            join d in _context.Diagnoses
                                             on pd.DiagnosisId equals d.DiagnosisId
-                                           where pd.PatientId == PatientId
+                                           where pd.PatientId == PatientId && pd.AppointmentId == AppointmentId
                                            select new DiagnosesModel
                                            {
                                                DiagnosisId = pd.DiagnosisId,
@@ -644,14 +644,14 @@ namespace PMS.PatientAPI.Services
             }
 
         }
-        public async Task<List<ProcedureModel>> GetProcedureByPatientId(int PatientId)
+        public async Task<List<ProcedureModel>> GetProcedureByPatientId(int PatientId, int AppointmentId)
         {
             try
             {
                 var procedureList = await (from pd in _context.PatientProcedureDetails
                                            join d in _context.Procedures
                                             on pd.PatientProcedureId equals d.ProcedureId
-                                           where pd.PatientId == PatientId
+                                           where pd.PatientId == PatientId && pd.AppointmentId == AppointmentId
                                            select new ProcedureModel
                                            {
                                                ProcedureId = pd.PatientProcedureId,
@@ -669,14 +669,14 @@ namespace PMS.PatientAPI.Services
             }
 
         }
-        public async Task<List<MedicationModel>> GetMedicationsByPatientId(int PatientId)
+        public async Task<List<MedicationModel>> GetMedicationsByPatientId(int PatientId, int AppointmentId)
         {
             try
             {
                 var medicationList = await (from pd in _context.PatientMedicationsDetails
                                             join d in _context.Medications
                                              on pd.PatientMedicationId equals d.DrugId
-                                            where pd.PatientId == PatientId
+                                            where pd.PatientId == PatientId && pd.AppointmentId == AppointmentId
                                             select new MedicationModel
                                             {
                                                 DrugId = pd.DrugId,
@@ -695,12 +695,12 @@ namespace PMS.PatientAPI.Services
             }
 
         }
-        public async Task<List<VitalSignsModel>> GetVitalSignsByPatientId(int PatientId)
+        public async Task<List<VitalSignsModel>> GetVitalSignsByPatientId(int PatientId, int appointmentId)
         {
             try
             {
                 var medicationList = await (from pd in _context.PatientVitalDetails
-                                            where pd.PatientId == PatientId
+                                            where pd.PatientId == PatientId && pd.AppointmentId == appointmentId
                                             select new VitalSignsModel
                                             {
                                                 BloodPressure = pd.BloodPressure,
