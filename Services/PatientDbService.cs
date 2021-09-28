@@ -1057,8 +1057,8 @@ namespace PMS.PatientAPI.Services
                     {
                         Operation = Constants.Update,
                         ObjectName = "Patient Vital Details",
-                        Description = $"Patient Vital Signs Saved For Id: {entity.PatientId}",
-                        CreatedBy = entity.PatientId,
+                        Description = $"Patient Vital Signs Saved For Id: {model.PatientId}",
+                        CreatedBy = model.PatientId,
                         CreatedDate = DateTime.Now
                     };
                     resObj.IsSuccess = true;
