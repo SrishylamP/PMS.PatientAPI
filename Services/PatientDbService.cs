@@ -586,10 +586,10 @@ namespace PMS.PatientAPI.Services
             var list = await _context.Medications.Select(e => new MedicationModel
             {
                 DrugId = e.DrugId,
-                DrugName = e.DrugName,
+                DrugName = string.IsNullOrEmpty(e.DrugStrength) ? e.DrugName : e.DrugName + "-" + e.DrugStrength,
                 DrugForm = e.DrugForm,
                 DrugBrandName = e.DrugBrandName,
-                DrugStrength = e.DrugStrength,
+                //DrugStrength = e.DrugStrength,
                 ReferenceStandard = e.ReferenceStandard
             }).ToListAsync();
             return list;
@@ -1033,10 +1033,11 @@ namespace PMS.PatientAPI.Services
             {
                 var resObj = new ResponseMessage();
                 var entity = await _context.PatientVitalDetails.FirstOrDefaultAsync(item => item.AppointmentId == model.AppointmentId && item.PatientId == model.PatientId);
+                var appentity =await _context.Appointments.FirstOrDefaultAsync(item => item.AppointmentId == model.AppointmentId);
 
+                PatientVitalDetail vital = new PatientVitalDetail();
                 if (entity == null)
                 {
-                    PatientVitalDetail vital = new PatientVitalDetail();
                     vital.PatientId = model.PatientId;
                     vital.AppointmentId = model.AppointmentId;
                     vital.Height = model.Height;
@@ -1046,11 +1047,45 @@ namespace PMS.PatientAPI.Services
                     vital.RespirationRate = model.RespirationRate;
                     _context.PatientVitalDetails.Add(vital);
                     _context.SaveChanges();
-
+                    if (appentity != null)
+                    {
+                        appentity.AppointmentStatus = "In Progress";
+                        _context.Appointments.Update(appentity);
+                    }
+                    _context.SaveChanges();
+                    var audit = new AuditModel
+                    {
+                        Operation = Constants.Update,
+                        ObjectName = "Patient Vital Details",
+                        Description = $"Patient Vital Signs Saved For Id: {entity.PatientId}",
+                        CreatedBy = entity.PatientId,
+                        CreatedDate = DateTime.Now
+                    };
                     resObj.IsSuccess = true;
                     resObj.message = "Patient vital details save successfully";
                 }
-
+                else if(entity!=null)
+                {
+                    entity.Height = model.Height;
+                    entity.Weight = model.Weight;
+                    entity.BloodPressure = model.BloodPressure;
+                    entity.BodyTemprature = model.BodyTemprature;
+                    entity.RespirationRate = model.RespirationRate;
+                    _context.PatientVitalDetails.Update(entity);                
+                    _context.SaveChanges();
+                    
+                    var audit = new AuditModel
+                    {
+                        Operation = Constants.Update,
+                        ObjectName = "Patient Vital Details",
+                        Description = $"Patient Vital Signs updated Id: {entity.PatientId}",
+                        CreatedBy = entity.PatientId,
+                        CreatedDate = DateTime.Now
+                    };
+                    AuditMe(audit);
+                    resObj.IsSuccess = true;
+                    resObj.message = "Patient vital details Updated successfully";
+                }
                 else
                 {
                     resObj.message = "Patient vital detail is invalid";
