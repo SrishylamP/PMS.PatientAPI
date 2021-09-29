@@ -638,5 +638,24 @@ namespace PMS.PatientAPI.Controllers
             }
 
         }
+        [Authorize]
+        [HttpGet]
+        [Route("GetPatientAllergyDetailsByUserId")]
+        public async Task<IActionResult> GetPatientAllergyDetailsByUserId(int patientUserId)
+        {
+            try
+            {
+                var result = await _patientService.GetPatientAllergyDetailsByUserId(patientUserId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Error, ex, ex.Message);
+                return BadRequest(ex);
+
+            }
+
+        }
+        
     }
 }
