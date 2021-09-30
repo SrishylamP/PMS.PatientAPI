@@ -1122,6 +1122,30 @@ namespace PMS.PatientAPI.Services
             // return list;
         }
 
+        public async Task<List<AllergyModel>> GetPatientAllergyDetailsByUserId(int patientUserId)
+        {
+
+            var allergyList = await (from u in _context.Users
+                                     join pd in _context.PatientDetails
+                                     on u.UserId equals pd.UserId
+                                     join pad in _context.PatientAllergyDetails
+                                     on pd.PatientId equals pad.PatientId
+                                    where u.UserId == patientUserId
+                                     select pad).Select
+           (allergy => new AllergyModel
+           {
+               AllergyId = allergy.AllergyId,
+               AllergyName = allergy.AllergyName,
+               AllergyType = allergy.AllergyType,
+               AllergyDescription = allergy.AllergenDescription,
+               AllergyClinicalInformation = allergy.AllergyClinicalInformation,
+               IsAllergyFatal = allergy.IsAllergyFatal
+           }).ToListAsync();
+
+            return allergyList;
+
+           
+        }
 
     }
 }
