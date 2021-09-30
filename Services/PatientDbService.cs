@@ -1101,11 +1101,11 @@ namespace PMS.PatientAPI.Services
 
         }
 
-        public async Task<List<VitalModel>> GetPatientVitalDetails(int patientId)
+        public async Task<List<VitalModel>> GetPatientVitalDetails(int patientId,int AppointmentId)
         {
 
             var objectList = await (from u in _context.PatientVitalDetails
-                                    where u.PatientId == patientId
+                                    where u.PatientId == patientId && u.AppointmentId==AppointmentId
                                     select u).Select
            (o => new VitalModel
            {

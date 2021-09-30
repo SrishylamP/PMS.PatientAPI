@@ -623,11 +623,11 @@ namespace PMS.PatientAPI.Controllers
         [Authorize]
         [HttpGet]
         [Route("GetPatientVitalDetails")]
-        public async Task<IActionResult> GetPatientVitalDetails(int patientId)
+        public async Task<IActionResult> GetPatientVitalDetails(int patientId,int AppointmentId)
         {
             try
             {
-                var result = await _patientService.GetPatientVitalDetails(patientId);
+                var result = await _patientService.GetPatientVitalDetails(patientId, AppointmentId);
                 return Ok(result);
             }
             catch (Exception ex)

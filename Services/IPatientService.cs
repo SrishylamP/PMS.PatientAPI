@@ -48,7 +48,7 @@ namespace PMS.PatientAPI.Services
         Task<ResponseMessage> ClosePatientVisit(int PatientId, int AppointmentId);
         Task<List<UserModel>> GetPatientDetailsForVisit(int patientId);
         Task<ResponseMessage> SavePatientVitalDetails(VitalModel model);
-        Task<List<VitalModel>> GetPatientVitalDetails(int patientId);
+        Task<List<VitalModel>> GetPatientVitalDetails(int patientId,int AppointmentId);
     }
 
    
